@@ -13,62 +13,84 @@ namespace Pig_Latin
         {
             Console.WriteLine("Welcome to the Pig Latin Translator");
 
-            //declaring variable types
-            string repeat;
-
             //translator loop 
             while (true)
             {
-                //Here is where we will pass through the translator method
-                Console.WriteLine("Enter a line to be translated:");
-                string answer = Console.ReadLine();
-                string[] sentance = answer.Split(' ');
+                string input = ReadInput();
 
-                foreach(string x in sentance)
+                foreach (string x in input.Split(' '))
                 {
-                Translator("^[AEIOUaeiou]", "[0-9]", x);
+                    Translator("^[AEIOUaeiou]", "[^A-z]", x);
                 }
-                Console.WriteLine("\nTranslate another line? y/n");
+                //ask user if they want to enter another word 
+                if (!ReadBoolean())
+                {
+                    Console.ReadKey();
+                    break;
+                }
+            }
+        }
 
+        static string ReadInput()
+        {
+            while (true)
+            {
+                Console.WriteLine("Enter a line to be translated:");
+                string answer = Console.ReadLine().ToLower();
+ 
+                if (!String.IsNullOrWhiteSpace(answer))
+                    return answer;
+            }
+        }
+        static bool ReadBoolean()
+        {
+            while (true)
+            {
+                //declaring variable types
+                string repeat;
+                Console.WriteLine("\nTranslate another line? y/n");
                 repeat = Console.ReadLine().ToLower();
 
                 if (repeat == "y" || repeat == "yes")
                 {
-                    continue;
+                    return true;
+                }
+                else if (repeat == "n" || repeat == "no")
+                {
+                    Console.WriteLine("Goodbye");
+                    return false;
                 }
                 else
                 {
-                    break;
+                    Console.WriteLine("That was an incorrect input.\nPlease enter yes or no:  ");  
                 }
             }
         }
         public static void Translator(string vowelCheck, string numCheck, string answer)
         {           
             string seperate = answer.Substring(0,1);
-            
-            if (Regex.IsMatch(seperate, vowelCheck))
-            {
-                Console.Write(answer + "way ");
 
-            }
-            else if (Regex.IsMatch(seperate, numCheck))
+            if (Regex.IsMatch(answer, numCheck))
             {
                 Console.WriteLine(answer);
             }
+            else if (Regex.IsMatch(seperate, vowelCheck))
+            {
+                Console.Write(answer + "way ");
+            }
             else
             {
-                int firstVowel= 0;
+                int firstVowel = 0;
                 for (int i = 0; i < answer.Length; i++)
                 {
                     if (Regex.IsMatch(answer[i].ToString(), vowelCheck))
                     {
                         firstVowel = i;
-                            break;
-
+                        break;
                     }
                 }
                 seperate = answer.Substring(0, firstVowel);
-                Console.Write(answer.Substring(firstVowel) + seperate + "ay ");                
+                Console.Write(answer.Substring(firstVowel) + seperate + "ay ");
             }
         }
     }
